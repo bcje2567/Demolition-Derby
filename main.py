@@ -25,7 +25,7 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
-
+    pygame.draw.rect(screen, "blue",(10,10,10,10))
     # RENDER YOUR GAME HERE
 
     # flip() the display to put your work on screen
