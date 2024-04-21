@@ -6,7 +6,7 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
-
+dt=0
 class Car(pygame.sprite.Sprite):
 
     def __init__(self, health, speed, damage, width, height):
@@ -18,13 +18,15 @@ class Car(pygame.sprite.Sprite):
 
         self.image = pygame.image.load("./Insporation/camoTruckNOBG.png")
 
-        centerX = screen.get_width() // 2
-        centerY = screen.get_height() // 2
+        self.centerX = screen.get_width() // 2
+        self.centerY = screen.get_height() // 2
 
-        self.rect = pygame.Rect(centerX, centerY, width, height)
-
+    def re_draw(self):
+        self.rect = pygame.Rect(self.centerX, self.centerY, self.width, self.height)
         screen.blit(self.image, self.rect)
 
+truck_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+truck = Car(100, 20, 0, 100, 100)
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -34,12 +36,22 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
-    pygame.draw.rect(screen, "blue",(100,100,100,100))
+    #pygame.draw.rect(screen, "blue",(100,100,100,100))
     # RENDER YOUR GAME HERE
-    truck = Car(100, 20, 0, 100, 100)
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w]:
+        truck.centerY -= 300 * dt
+    if keys[pygame.K_s]:
+        truck.centerY += 300 * dt
+    if keys[pygame.K_a]:
+        truck.centerX -= 300 * dt
+    if keys[pygame.K_d]:
+        truck.centerX += 300 * dt
+
     # flip() the display to put your work on screen
+    truck.re_draw()
     pygame.display.flip()
 
-    clock.tick(60)  # limits FPS to 60
+    dt = clock.tick(60) / 1000 # limits FPS to 60
 
 pygame.quit()
