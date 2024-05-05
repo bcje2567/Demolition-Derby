@@ -7,6 +7,7 @@ screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
 dt=0
+rot=0
 class Car(pygame.sprite.Sprite):
 
     def __init__(self, health, speed, damage, width, height, angle):
@@ -17,16 +18,17 @@ class Car(pygame.sprite.Sprite):
         self.width=width
         self.angle=angle
         self.image = pygame.image.load("./Insporation/camoTruckNOBG.png")
-
+        self.image_clean = self.image.copy()
         self.centerX = screen.get_width() // 2
         self.centerY = screen.get_height() // 2
 
     def re_draw(self):
-        
-        print(self.angle)   
-        # self.rect = pygame.Rect(self.centerX, self.centerY, self.width, self.height)
+        self.image = pygame.transform.rotate(self.image_clean, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.centerX
+        self.rect.y = self.centerY
+        screen.blit(self.image, self.rect)
 
-        screen.blit(self.image, self.image.get_rect())
 
 truck_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 truck = Car(100, 20, 0, 100, 100, 0)
@@ -44,13 +46,17 @@ while running:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] and truck.centerY >= 0:
         truck.centerY -= 300 * dt
+        print("up")
     if keys[pygame.K_s] and truck.centerY <= 550:
         truck.centerY += 300 * dt
+        print("down")
     if keys[pygame.K_a]: #and truck.centerX >= 0:
-        truck.angle -= 1 * dt
-        truck.image = pygame.transform.rotate(truck.image, 1) 
-    # if keys[pygame.K_d]: #and truck.centerX <= 1180:
-    #     truck.angle += 15
+        rot += 10
+        truck.angle = rot
+        
+    if keys[pygame.K_d]: #and truck.centerX <= 1180:
+        rot -= 10
+        truck.angle = rot
 
     # flip() the display to put your work on screen
     truck.re_draw()
