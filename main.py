@@ -1,6 +1,6 @@
 # Example file showing a basic pygame "game loop"
 import pygame
- 
+import math
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -18,6 +18,7 @@ class Car(pygame.sprite.Sprite):
         self.width=width
         self.angle=angle
         self.image = pygame.image.load("./Insporation/camoTruckNOBG.png")
+        self.image = pygame.transform.rotate(self.image, -90)
         self.image_clean = self.image.copy()
         self.centerX = screen.get_width() // 2
         self.centerY = screen.get_height() // 2
@@ -28,6 +29,14 @@ class Car(pygame.sprite.Sprite):
         self.rect.x = self.centerX
         self.rect.y = self.centerY
         screen.blit(self.image, self.rect)
+
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load("./Insporation/cartoon stone.jpg")
+        screen.blit(self.image, (x, y))
 
 
 truck_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
@@ -44,22 +53,29 @@ while running:
     #pygame.draw.rect(screen, "blue",(100,100,100,100))
     # RENDER YOUR GAME HERE
     keys = pygame.key.get_pressed()
+    speed = 5
     if keys[pygame.K_w] and truck.centerY >= 0:
-        truck.centerY -= 300 * dt
-        print("up")
+        deltaX = math.cos(math.radians(truck.angle))
+        deltaY = math.sin(math.radians(truck.angle))
+        truck.centerX += deltaX * speed
+        truck.centerY -= deltaY * speed
+        print("cos (deltaX) %f sin (deltaY) %f angle %f" % (deltaX ,deltaY , truck.angle))
+        print("X %f Y %f" %(truck.centerX, truck.centerY))
+   
     if keys[pygame.K_s] and truck.centerY <= 550:
         truck.centerY += 300 * dt
         print("down")
     if keys[pygame.K_a]: #and truck.centerX >= 0:
-        rot += 10
+        rot += 1
         truck.angle = rot
         
     if keys[pygame.K_d]: #and truck.centerX <= 1180:
-        rot -= 10
+        rot -= 1
         truck.angle = rot
 
     # flip() the display to put your work on screen
     truck.re_draw()
+    a = Obstacle(200, 500)
     pygame.display.flip()
 
     dt = clock.tick(60) / 1000 # limits FPS to 60
