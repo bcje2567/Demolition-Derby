@@ -19,6 +19,7 @@ class Car(pygame.sprite.Sprite):
         self.angle=angle
         self.image = pygame.image.load("./Insporation/camoTruckNOBG.png")
         self.image = pygame.transform.rotate(self.image, -90)
+        self.rect = self.image.get_rect()
         self.image_clean = self.image.copy()
         self.centerX = screen.get_width() // 2
         self.centerY = screen.get_height() // 2
@@ -30,12 +31,16 @@ class Car(pygame.sprite.Sprite):
         self.rect.y = self.centerY
         screen.blit(self.image, self.rect)
 
+    def collide_obstacle(obstacle):
+        pass
+
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.image = pygame.image.load("./Insporation/cartoon stone.jpg")
+        self.rect = self.image.get_rect()
         screen.blit(self.image, (x, y))
 
 
@@ -53,24 +58,29 @@ while running:
     #pygame.draw.rect(screen, "blue",(100,100,100,100))
     # RENDER YOUR GAME HERE
     keys = pygame.key.get_pressed()
-    speed = 5
-    if keys[pygame.K_w] and truck.centerY >= 0:
+    speed = 15
+    if keys[pygame.K_w]:
         deltaX = math.cos(math.radians(truck.angle))
         deltaY = math.sin(math.radians(truck.angle))
         truck.centerX += deltaX * speed
         truck.centerY -= deltaY * speed
-        print("cos (deltaX) %f sin (deltaY) %f angle %f" % (deltaX ,deltaY , truck.angle))
-        print("X %f Y %f" %(truck.centerX, truck.centerY))
+        print(truck.rect.top)
+        #print("cos (deltaX) %f sin (deltaY) %f angle %f" % (deltaX ,deltaY , truck.angle))
+        #print("X %f Y %f" %(truck.centerX, truck.centerY))
    
-    if keys[pygame.K_s] and truck.centerY <= 550:
-        truck.centerY += 300 * dt
-        print("down")
+    if keys[pygame.K_s]:
+        deltaX = math.cos(math.radians(truck.angle))
+        deltaY = math.sin(math.radians(truck.angle))
+        truck.centerX -= deltaX * speed
+        truck.centerY += deltaY * speed
+        print(truck.rect.top)
+
     if keys[pygame.K_a]: #and truck.centerX >= 0:
-        rot += 1
+        rot += 3
         truck.angle = rot
         
     if keys[pygame.K_d]: #and truck.centerX <= 1180:
-        rot -= 1
+        rot -= 3
         truck.angle = rot
 
     # flip() the display to put your work on screen
